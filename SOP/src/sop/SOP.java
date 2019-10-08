@@ -15,7 +15,8 @@ public class SOP {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        Parser parser = new Parser(args[0]);
+        System.out.println(parser);
     }
     
 }
