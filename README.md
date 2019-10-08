@@ -11,5 +11,5 @@ Report:
 - description of methode used
 - table of results describing obtained result and the comparison with the litterature
 
-CHECKER
+CHECKER\n
 pour vérifier sur un fichier solution: il faut mettre le fichier de graphe en 1er argument et le fichier solution en deuxième argument.
