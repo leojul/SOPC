@@ -1,7 +1,7 @@
 # SOPC
 Sequential Ordering Problem Challenge: projet advencing OR tool
 
-mail: luc.liralesso@gmail.com
+mail: luc.libralesso@gmail.com
 
 Souce code:
  - implement methods (exact method, heuristique and advanced method
