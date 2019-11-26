@@ -6,107 +6,83 @@
 package sop;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author diardjul
  */
 public class Parser {
-    int n;
-    int[][] matrix;
-    int[] tabSol;
 
-    Parser(String arg) {
-        reader(arg);
+    private int[][] matrix;
+    private int[] solutions;
+
+    Parser(String fileName) throws IOException {
+        readInput(fileName);
     }
-    Parser(String arg,int i){
-        readerSol(arg);
+
+    Parser(String fileName,int i) throws IOException {
+        readSolution(fileName);
     }
     
-    public void reader(String nameFile){
-        BufferedReader buff;
-        String line;
-        try {
-            buff= new BufferedReader(new FileReader(nameFile));
-            line  = buff.readLine();
-            this.n = Integer.parseInt(line);
-            matrix = new int[n][n];
+    public void readInput(String fileName) throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))){
+            String line  = bufferedReader.readLine();
+            int n = Integer.parseInt(line);
+            this.matrix = new int[n][n];
             int i = 0;
-            while ((line = buff.readLine())!= null){
-                String [] tabS = line.split("\\s+");
+            while ((line = bufferedReader.readLine()) != null){
+                String [] strings = line.split("\\s+");
                 for (int j = 0; j < n; j++) {
-                    matrix[i][j] = Integer.parseInt(tabS[j]);
+                    matrix[i][j] = Integer.parseInt(strings[j]);
                 }
                 i++;
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public String toString() {
-        String s = "";
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                s=s+" "+matrix[i][j];
-            }
-            s+="\n";
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int[] line : matrix) {
+            Arrays.stream(line).forEachOrdered(stringBuffer::append);
+            stringBuffer.append('\n');
         }
-        return s;
+        return stringBuffer.toString();
     }
     
-    public void readerSol(String solFile){
-        BufferedReader buff;
-        String line;
-        try {
-            buff= new BufferedReader(new FileReader(solFile));
-            line= buff.readLine();
-            String [] tabS = line.split(" ");
-            tabSol= new int[tabS.length];
-            for (int i = 0; i < tabS.length; i++) {
-                tabSol[i]=Integer.parseInt(tabS[i]);
-            }
-            for (int i = 0; i < tabS.length; i++) {
-                System.out.print(tabSol[i]+" ");
-            }
-            System.out.println("");
-            
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+    public void readSolution(String fileName) throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
+            String line = bufferedReader.readLine();
+            String[] strings = line.split(" ");
+            solutions = Arrays.stream(strings).mapToInt(Integer::parseInt).toArray();
+            Arrays.stream(strings).forEachOrdered(e -> System.out.print(e + ' '));
+            System.out.println();
         }
     }
     
     public void checker() throws ConstrainedDisrespect{
        int result=0;
-       int [] noDoublon =new int [tabSol.length];   //tableau pour vérifier que l'on ne passe pas plusieur fois par un même sommet
-       if(tabSol.length!=n){
+       int [] noDoublon = new int [solutions.length];   //tableau pour vérifier que l'on ne passe pas plusieur fois par un même sommet
+       if(solutions.length != matrix.length){
            throw new ConstrainedDisrespect("the lenght of the solution should be equal to the number of vertices");
        }
-        for (int i = 0; i < tabSol.length; i++) {
+        for (int i = 0; i < solutions.length; i++) {
             noDoublon[i]=i;
         }
-        for (int i = 0; i < tabSol.length-1; i++) {
-            if(matrix[tabSol[i]][tabSol[i+1]]==-1){
+        for (int i = 0; i < solutions.length-1; i++) {
+            if(matrix[solutions[i]][solutions[i+1]]==-1){
                 result=-1;
                 throw new ConstrainedDisrespect("contraint precedence");
-            }else if (noDoublon[tabSol[i]]==-1){
+            }else if (noDoublon[solutions[i]]==-1){
                 throw new ConstrainedDisrespect("do not go through the same vertice more than once");
             }else{
-                result+=matrix[tabSol[i]][tabSol[i+1]];
+                result+=matrix[solutions[i]][solutions[i+1]];
             }
-            noDoublon[tabSol[i]]=-1;
+            noDoublon[solutions[i]]=-1;
         }
         System.out.println("result= "+result);
     }
@@ -139,7 +115,6 @@ public class Parser {
     }
 
     private static class ConstrainedDisrespect extends Exception {
-
         public ConstrainedDisrespect(String message) {
             System.out.println("Constrained Disrespect " + message);
         }

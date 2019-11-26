@@ -19,7 +19,7 @@ public class SOP {
      */
     public static void main(String[] args){
         Parser parser = new Parser(args[0]);
-        parser.readerSol(args[1]);
+        parser.readerSolution(args[1]);
         System.out.println("NORMAL:");
        try {
             parser.checker();
