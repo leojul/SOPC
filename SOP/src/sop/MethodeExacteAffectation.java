@@ -1,7 +1,7 @@
 package sop;
 
 import ilog.concert.*;
-import ilog.cplex.IloCplex;
+import ilog.cp.IloCP;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MethodeExacteMIP {
+public class MethodeExacteAffectation {
     /**
      * A reference to the CPO solver
      **/
-    protected IloCplex solver;
+    protected IloCP solver;
     protected Parser parser;
 
     /**
@@ -21,18 +21,15 @@ public class MethodeExacteMIP {
      **/
     protected IloIntVar[][] boolVars;
 
-    public MethodeExacteMIP(String filenameInput) {
+    public MethodeExacteAffectation(String filenameInput) {
         this(filenameInput, "");
     }
 
-    public MethodeExacteMIP(String filenameInput, String filenameSolution) {
+    public MethodeExacteAffectation(String filenameInput, String filenameSolution) {
         try {
-
-            //parser = new Parser(filenameInput, filenameSolution);
             parser = new Parser(filenameInput);
             System.out.println(parser);
             System.out.println("NORMAL:");
-            //parser.checker();
             System.out.println("MÉTHODE EXACTE:");
             stateModel();
             int[] sol = solve();
@@ -65,10 +62,16 @@ public class MethodeExacteMIP {
         try {
 
             // 1. Create a Solver
-            solver = new IloCplex();
+            solver = new IloCP();
 
             // 2. Create the variables
-            boolVars = new IloIntVar[parser.n][parser.n];
+            IloIntVar [] successors = new IloIntVar[parser.n - 1];
+
+            for (int i = 0; i < successors.length; i++)
+                successors[i] = solver.intVar(1, parser.n - 1);
+
+            IloIntVar [] positionSuccessors = new IloIntVar[parser.n - 1];
+
             for (int i = 0; i < parser.n; i++)
                 for (int j = 0; j < parser.n; j++)
                     boolVars[i][j] = solver.boolVar();

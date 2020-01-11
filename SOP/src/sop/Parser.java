@@ -29,10 +29,6 @@ public class Parser {
         readInput(filenameInput);
     }
 
-    Parser(String fileName, int i) throws IOException {
-        readSolution(fileName);
-    }
-
     public void readInput(String fileName) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
             String line = bufferedReader.readLine();

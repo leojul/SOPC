@@ -25,6 +25,10 @@ public class MethodeExacteOrdonnancement {
     /**
      * Constructor
      **/
+    public MethodeExacteOrdonnancement(String filenameInput) {
+        this(filenameInput, "");
+    }
+
     public MethodeExacteOrdonnancement(String filenameInput, String filenameSolution) {
         try {
             parser = new Parser(filenameInput, filenameSolution);
@@ -40,7 +44,7 @@ public class MethodeExacteOrdonnancement {
 
     /**
      * @return the CPO solver so automatic tests can be performed on it WARNING:
-     *         this method is required by the caseine activity
+     * this method is required by the caseine activity
      **/
     public IloCP getSolver() {
         return solver;
@@ -54,13 +58,13 @@ public class MethodeExacteOrdonnancement {
 
             // 2. Create the variables
             int[] durations = IntStream
-                    .range(0, parser.n*parser.n)
-                    .filter(i -> parser.matrix[i/parser.n][i%parser.n] != -1)
+                    .range(0, parser.n * parser.n)
+                    .filter(i -> parser.matrix[i / parser.n][i % parser.n] != -1)
                     .toArray();
 
             int[] prec = IntStream
-                    .range(0, parser.n*parser.n)
-                    .filter(i -> parser.matrix[i/parser.n][i%parser.n] == -1)
+                    .range(0, parser.n * parser.n)
+                    .filter(i -> parser.matrix[i / parser.n][i % parser.n] == -1)
                     .toArray();
 
             System.out.println(Arrays
@@ -77,8 +81,7 @@ public class MethodeExacteOrdonnancement {
                         if (parser.matrix[i][j] != -1) {
                             tasks[i][j] = t;
                             ends[i][j] = solver.endOf(t);
-                        }
-                        else
+                        } else
                             tasks[i][j] = null;
                     }
                 }
@@ -92,7 +95,7 @@ public class MethodeExacteOrdonnancement {
                             }
                         }
 
-            solver.add(solver.minimize(solver.max(Arrays.stream(ends).flatMap(Arrays::stream).toArray(IloIntExpr[]::new))));
+            solver.add(solver.minimize(solver.min(Arrays.stream(ends).flatMap(Arrays::stream).toArray(IloIntExpr[]::new))));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,9 +106,10 @@ public class MethodeExacteOrdonnancement {
         return var.getName() + "[" + (int) solver.getStart(var) + ", "
                 + (int) solver.getEnd(var) + "]";
     }
+
     /**
      * This method allows the use of next() for enumerating all the solutions
-     *
+     * <p>
      * WARNING: this method is required by the caseine activity
      */
     public void solve() {
@@ -117,7 +121,7 @@ public class MethodeExacteOrdonnancement {
                 for (int i = 0; i < parser.n; ++i) {
                     for (int j = 0; j < parser.n; ++j) {
                         if (i != j && tasks[i][j] != null)
-                            sol[i][j] = (int)solver.getStartMin(tasks[i][j]);
+                            sol[i][j] = (int) solver.getStartMin(tasks[i][j]);
                     }
                 }
             } else {
