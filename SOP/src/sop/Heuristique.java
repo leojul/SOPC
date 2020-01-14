@@ -12,10 +12,10 @@ import java.util.ArrayList;
  */
 public class Heuristique {
     public int n;
-    public int[][] mDist;          //matrix des distances entre les sommets
-    public int[][] mChemin;       //les sommet accessible de chaque sommet avec les contrainte de précedence
-    public ArrayList<Integer> vecVerxtex;       // les sommet par lesquels on est pas passsé
-    public ArrayList<Integer> sol;             // solution trouver
+    public int[][] mDist;          // matric des distances entre les sommets
+    public int[][] mChemin;       // les sommets accessibles de chaque sommet avec les contraintes de précedence
+    public ArrayList<Integer> vecVerxtex;       // les sommets par lesquels on est pas passsé
+    public ArrayList<Integer> sol;             // solution trouvée
 
     public Heuristique(Parser parser) {
         n = parser.n;
